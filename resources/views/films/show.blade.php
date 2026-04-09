@@ -3,68 +3,77 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-lg-8">
+
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Détails du film</h5>
+                    <h5><i class="bi bi-film me-2"></i>Détails du film</h5>
                     <a href="{{ route('films.index') }}" class="btn btn-secondary btn-sm">
-                        <i class="bi bi-arrow-left"></i> Retour à la liste
+                        <i class="bi bi-arrow-left me-1"></i>Retour
                     </a>
                 </div>
 
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h3>{{ $film['title'] ?? 'Sans titre' }}</h3>
-                            <p class="text-muted">{{ $film['description'] ?? 'Aucune description disponible.' }}</p>
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h3 class="text-gold mb-1">{{ $film['title'] ?? 'Sans titre' }}</h3>
+                            <p class="text-muted mb-0">{{ $film['description'] ?? 'Aucune description disponible.' }}</p>
                         </div>
-                        <div class="col-md-4 text-end">
-                            @if(isset($film['rating']))
-                                <span class="badge bg-info fs-5">{{ $film['rating'] }}</span>
-                            @endif
+                        @if(isset($film['rating']))
+                            <span class="rating-badge rating-{{ $film['rating'] }} ms-3" style="white-space:nowrap;font-size:1rem;padding:0.4em 0.9em;">
+                                {{ $film['rating'] }}
+                            </span>
+                        @endif
+                    </div>
+
+                    <hr class="section-divider">
+
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                                <div class="text-muted" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.5px">ID</div>
+                                <div class="fw-600">{{ $film['filmId'] ?? $film['id'] ?? '—' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                                <div class="text-muted" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.5px">Année de sortie</div>
+                                <div class="fw-600">{{ $film['releaseYear'] ?? '—' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                                <div class="text-muted" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.5px">Durée</div>
+                                <div class="fw-600">{{ $film['length'] ?? '—' }} minutes</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                                <div class="text-muted" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.5px">Durée de location</div>
+                                <div class="fw-600">{{ $film['rentalDuration'] ?? '—' }} jours</div>
+                            </div>
                         </div>
                     </div>
 
-                    <hr>
-
-                    <dl class="row">
-                        <dt class="col-sm-3">ID</dt>
-                        <dd class="col-sm-9">{{ $film['filmId'] ?? $film['id'] ?? 'N/A' }}</dd>
-
-                        <dt class="col-sm-3">Année de sortie</dt>
-                        <dd class="col-sm-9">{{ $film['releaseYear'] ?? 'N/A' }}</dd>
-
-                        <dt class="col-sm-3">Langue</dt>
-                        <dd class="col-sm-9">ID {{ $film['languageId'] ?? 'N/A' }}</dd>
-
-                        <dt class="col-sm-3">Durée</dt>
-                        <dd class="col-sm-9">{{ $film['length'] ?? 'N/A' }} minutes</dd>
-
-                        <dt class="col-sm-3">Coût de remplacement</dt>
-                        <dd class="col-sm-9">{{ $film['replacementCost'] ?? 'N/A' }} €</dd>
-
-                        <dt class="col-sm-3">Note</dt>
-                        <dd class="col-sm-9">{{ $film['rating'] ?? 'N/A' }}</dd>
-
-                        <dt class="col-sm-3">Caractéristiques spéciales</dt>
-                        <dd class="col-sm-9">{{ $film['specialFeatures'] ?? 'Aucune' }}</dd>
-
-                        <dt class="col-sm-3">Dernière mise à jour</dt>
-                        <dd class="col-sm-9">{{ $film['lastUpdate'] ?? 'N/A' }}</dd>
-                    </dl>
-
-                    <hr>
+                    <hr class="section-divider">
 
                     <div class="d-flex gap-2">
-                        <a href="#" class="btn btn-warning">
-                            <i class="bi bi-pencil"></i> Modifier
+                        <a href="{{ route('films.edit', $film['filmId'] ?? $film['id']) }}" class="btn btn-warning">
+                            <i class="bi bi-pencil me-1"></i>Modifier
                         </a>
-                        <button class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce film ?')">
-                            <i class="bi bi-trash"></i> Supprimer
-                        </button>
+                        <form action="{{ route('films.destroy', $film['filmId'] ?? $film['id']) }}"
+                              method="POST"
+                              onsubmit="return confirm('Supprimer ce film ?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash me-1"></i>Supprimer
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

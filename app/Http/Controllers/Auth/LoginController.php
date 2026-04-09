@@ -48,16 +48,19 @@ class LoginController extends Controller
             'name'      => $staff['name']
                            ?? trim(($staff['first_name'] ?? '').' '.($staff['last_name'] ?? ''))
                            ?: ($staff['email'] ?? 'Utilisateur'),
-            'token'     => $resp['token'] ?? $resp['access_token'] ?? null, // token JWT Toad si renvoyé
-            'staff'     => $staff, // on garde toutes les infos utiles
+            'token'     => $resp['token'] ?? $resp['access_token'] ?? null,
+            'staff'     => $staff,
         ];
 
-        // Enregistrer l’utilisateur en session
+        // Enregistrer l'URL API choisie en session
+        $request->session()->put('toad_api_url', $request->input('api_url', config('services.toad.url')));
+
+        // Enregistrer l'utilisateur en session
         $request->session()->put('toad_user', $userData);
 
-        // Connecter un utilisateur “en mémoire”
+        // Connecter un utilisateur "en mémoire"
         $user = new ToadUser($userData);
-        Auth::login($user, false); // éviter remember me (non supporté par ce provider)
+        Auth::login($user, false);
 
         return $this->sendLoginResponse($request);
     }

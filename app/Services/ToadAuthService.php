@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -58,18 +59,31 @@ class ToadAuthService
                 'status' => $status,
                 'body' => $responseBody
             ]);
-            return null;
 
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
             Log::error('Erreur de connexion API Toad', [
                 'msg' => $e->getMessage()
             ]);
-            return null;
         } catch (\Throwable $e) {
             Log::error('Erreur API Toad', [
                 'msg' => $e->getMessage()
             ]);
+        }
+
+        // Fallback : auth directe en base
+        $staff = DB::table('staff')->where('email', $email)->first();
+        if (!$staff || $staff->password !== $password) {
             return null;
         }
+
+        return [
+            'staffId'    => $staff->staff_id,
+            'email'      => $staff->email,
+            'firstName'  => $staff->first_name,
+            'lastName'   => $staff->last_name,
+            'username'   => $staff->username,
+            'active'     => $staff->active,
+            'token'      => null,
+        ];
     }
 }

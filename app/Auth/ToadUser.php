@@ -6,5 +6,15 @@ use Illuminate\Auth\GenericUser;
 
 class ToadUser extends GenericUser
 {
-    // Aucun code requis : GenericUser implémente Authenticatable
+    public function getRememberToken(): string
+    {
+        return '';
+    }
+
+    public function setRememberToken($value): void {}
+
+    public function getRememberTokenName(): string
+    {
+        return '';
+    }
 }
